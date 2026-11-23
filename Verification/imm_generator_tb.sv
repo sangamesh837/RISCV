@@ -19,7 +19,7 @@ module imm_generator_tb;
     check('h7FF,0,'b1100011,0,'h00000FFE,"Branch positive");
     check('h800,0,'b1100011,0,'hFFFFF000,"Branch negative");
     check(0,0,'b1101111,'h00001,'h00000002,"JAL positive");
-    check(0,0,'b1101111,'hFFFFF,'hFFFFE000,"JAL negative");
+    check(0,0,'b1101111,'hFFFFF,'hFFFFFFFE,"JAL negative");
     check(0,0,'b0110111,'hABCDE,'hABCDE000,"LUI");
     check(0,0,'b0010111,'h12345,'h12345000,"AUIPC");
     check('hFFF,0,'b1100111,0,'hFFFFFFFF,"JALR sign extension");
