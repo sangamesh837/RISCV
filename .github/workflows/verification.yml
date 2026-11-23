@@ -1,0 +1,72 @@
+name: RISC-V Verification
+
+on:
+  push:
+    paths:
+      - "ALU/**"
+      - "ALU_Control/**"
+      - "Immediate_Generator/**"
+      - "Main_Control/**"
+      - "Register_File/**"
+      - "WB_Stage/**"
+      - "Verification/**"
+      - ".github/workflows/verification.yml"
+  pull_request:
+    paths:
+      - "ALU/**"
+      - "ALU_Control/**"
+      - "Immediate_Generator/**"
+      - "Main_Control/**"
+      - "Register_File/**"
+      - "WB_Stage/**"
+      - "Verification/**"
+      - ".github/workflows/verification.yml"
+  workflow_dispatch:
+
+jobs:
+  unit-tests:
+    name: Run available module testbenches
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Icarus Verilog
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y iverilog
+
+      - name: ALU testbench
+        run: |
+          iverilog -g2012 -s alu_tb -o /tmp/alu.vvp ALU/rtl.sv Verification/alu_tb.sv
+          vvp /tmp/alu.vvp
+
+      - name: ALU control testbench
+        run: |
+          iverilog -g2012 -s alu_control_tb -o /tmp/alu_control.vvp ALU_Control/rtl.sv Verification/alu_control_tb.sv
+          vvp /tmp/alu_control.vvp
+
+      - name: Immediate generator testbench
+        run: |
+          iverilog -g2012 -s imm_generator_tb -o /tmp/imm_generator.vvp Immediate_Generator/rtl.sv Verification/imm_generator_tb.sv
+          vvp /tmp/imm_generator.vvp
+
+      - name: Main control testbench
+        run: |
+          iverilog -g2012 -s main_control_tb -o /tmp/main_control.vvp Main_Control/rtl.sv Verification/main_control_tb.sv
+          vvp /tmp/main_control.vvp
+
+      - name: Register file testbench
+        run: |
+          iverilog -g2012 -s register_file_tb -o /tmp/register_file.vvp Register_File/rtl.sv Verification/register_file_tb.sv
+          vvp /tmp/register_file.vvp
+
+      - name: Write-back stage testbench
+        run: |
+          iverilog -g2012 -s wb_stage_tb -o /tmp/wb_stage.vvp WB_Stage/rtl.sv Verification/wb_stage_tb.sv
+          vvp /tmp/wb_stage.vvp
+
+      - name: Single-cycle processor testbench status
+        run: |
+          echo "NOT RUN: single_cycle_riscv_tb requires a single_cycle_riscv RTL module."
+          echo "The current Single_Cycle_RISCV/rtl.sv contains only a register_file module."
